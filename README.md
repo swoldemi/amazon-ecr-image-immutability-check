@@ -9,6 +9,7 @@
 >Enforce image tag immutability on all Elastic Container Registry repositories within an AWS account
 
 The problem: As of March 2020, [AWS Config](https://aws.amazon.com/config/) does not support any custom or native integrations with ECR: https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html
+
 The solution: Run a Serverless Application Repository app to automatically remediate and report on noncompliant ECR repositories for you!
 
 ## Usage
@@ -48,7 +49,7 @@ To deploy this function from AWS GovCloud or regions in China, you must have an 
 |**AWS GovCloud (US-West) (us-gov-west-1)**    |[![][sar-deploy]](https://deploy.serverlessrepo.app/us-gov-west-1/?app=arn:aws:serverlessrepo:us-east-1:273450712882:applications/ecr-image-immutability-check) |
 
 ### Configuration
-1. Interval (required) - How often should the function run? Requires a valid Schedule Expression: https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html. Default is `rate(24 hours)`.
+1. Interval (required) - How often should the function run? Requires a valid Schedule Expression: https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html. Default is once a day (`rate(24 hours)`).
 
 ### Test that it works
 After your specified interval and interval unit (example: 5 minutes), a CloudWatch event will trigger the Lambda function and scan your account for repositories that do not have image tag immutability enabled. If any are found, image tag immutability will be enabled.

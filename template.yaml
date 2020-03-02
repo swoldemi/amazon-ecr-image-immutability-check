@@ -17,7 +17,7 @@ Metadata:
 Parameters:
   Interval:
     Type: String
-    Description: How often should the function run? See
+    Description: How often should the function run? For examples, see https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html
     Default: rate(24 hours)
 
 Resources:
