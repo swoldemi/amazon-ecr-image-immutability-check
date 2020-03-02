@@ -1,0 +1,83 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: ecr-image-immutability-check
+    Description: Enforce image tag immutability on all Elastic Container Registry repositories within your AWS account
+    Author: Simon Woldemichael
+    SpdxLicenseId: MIT-0
+    LicenseUrl: LICENSE
+    ReadmeUrl: README.md
+    Labels: ["ecr", "tag", "immutability", "auto-remediation"]
+    HomePageUrl: https://github.com/swoldemi/ecr-image-immutability-check
+    SemanticVersion: 1.0.0
+    SourceCodeUrl: https://github.com/swoldemi/ecr-image-immutability-check
+
+Parameters:
+  Interval:
+    Type: String
+    Description: How often should the function run? See
+    Default: rate(24 hours)
+
+Resources:
+  ECRImageImmutabilityCheckExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action:
+              - sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyDocument:
+            Statement:
+              - Action:
+                  - ecr:DescribeRepositories
+                  - ecr:PutImageTagMutability
+                  - xray:PutTraceSegments
+                Effect: Allow
+                Resource: "*"
+            Version: "2012-10-17"
+          PolicyName: ECRImageImmutabilityCheckLambdaPolicy
+
+  ECRImageImmutabilityCheckFunction:
+    Type: AWS::Serverless::Function
+    Description: Lambda handler for ecr-image-immutability-check
+    Properties:
+      FunctionName: ecr-image-immutability-check
+      Handler: main
+      Runtime: go1.x
+      Tracing: Active
+      MemorySize: 128
+      Role: !GetAtt ECRImageImmutabilityCheckExecutionRole.Arn
+      Timeout: 15
+
+  ECRImageImmutabilityCheckFunctionEvent:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: CloudWatch scheduled event to invoke the ecr-image-immutability-check Lambda function
+      ScheduleExpression: !Ref Interval
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt ECRImageImmutabilityCheckFunction.Arn
+          Id: ECRImageImmutabilityCheckFunctionEvent
+
+  ECRImageImmutabilityCheckFunctionEventPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt ECRImageImmutabilityCheckFunction.Arn
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt ECRImageImmutabilityCheckFunctionEvent.Arn
+
+Outputs:
+  LambdaFunctionArn:
+    Description: ecr-image-immutability-check Lambda Function ARN
+    Value: !GetAtt ECRImageImmutabilityCheckFunction.Arn
