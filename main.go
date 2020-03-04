@@ -5,6 +5,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ecr"
+	"github.com/aws/aws-sdk-go/service/sns"
 	"github.com/aws/aws-xray-sdk-go/xray"
 	log "github.com/sirupsen/logrus"
 	"github.com/swoldemi/ecr-image-immutability-check/pkg/lib"
@@ -26,12 +27,14 @@ func main() {
 	}
 
 	ecrSvc := ecr.New(sess)
+	snsSvc := sns.New(sess)
 	if err := xray.Configure(xray.Config{LogLevel: "trace"}); err != nil {
 		log.Fatalf("Error configuring X-Ray: %v\n", err)
 		return
 	}
 
 	xray.AWS(ecrSvc.Client)
-	log.Info("Enabled request tracing on ECR API client")
-	lambda.Start(lib.NewFunctionContainer(ecrSvc, lib.Production).GetHandler())
+	xray.AWS(snsSvc.Client)
+	log.Info("Enabled request tracing on ECR and SNS API client")
+	lambda.Start(lib.NewFunctionContainer(ecrSvc, snsSvc, lib.Production).GetHandler())
 }

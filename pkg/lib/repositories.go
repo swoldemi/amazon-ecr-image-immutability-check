@@ -30,10 +30,15 @@ func (f *FunctionContainer) ListNoncompliantECRRepositories(ctx context.Context)
 	if err := f.ECR.DescribeRepositoriesPagesWithContext(ctx, input, pager); err != nil {
 		return nil, err
 	}
+	if f.NotificationsEnabled {
+		if err := f.PublishSNSMessage(ctx, repositories); err != nil {
+			return nil, err
+		}
+	}
 	return repositories, nil
 }
 
-// SetImageTagImmutability sets ImageTagImmutability on all noncompliant ECR repositories
+// SetImageTagImmutability sets ImageTagImmutability on all noncompliant ECR repositories.
 func (f *FunctionContainer) SetImageTagImmutability(ctx context.Context, repos []*ecr.Repository) error {
 	for _, r := range repos {
 		input := &ecr.PutImageTagMutabilityInput{

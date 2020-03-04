@@ -3,9 +3,11 @@ package lib
 
 import (
 	"context"
+	"os"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go/service/ecr/ecriface"
+	"github.com/aws/aws-sdk-go/service/sns/snsiface"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -22,21 +24,30 @@ const (
 
 // FunctionContainer contains the dependencies and business logic for the ecr-image-immutability-check Lambda function.
 type FunctionContainer struct {
-	Environment Environment
-	ECR         ecriface.ECRAPI
+	Environment          Environment
+	ECR                  ecriface.ECRAPI
+	SNS                  snsiface.SNSAPI
+	TopicARN             string
+	NotificationsEnabled bool
 }
 
 // NewFunctionContainer creates a new FunctionContainer.
-func NewFunctionContainer(ecrSvc ecriface.ECRAPI, env Environment) *FunctionContainer {
+func NewFunctionContainer(ecrSvc ecriface.ECRAPI, snsSvc snsiface.SNSAPI, env Environment) *FunctionContainer {
 	log.Infof("Creating function container for environment: %v", env)
 	return &FunctionContainer{
 		Environment: env,
 		ECR:         ecrSvc,
+		SNS:         snsSvc,
 	}
 }
 
 // GetHandler returns the function handler for ecr-image-immutability-check.
 func (f *FunctionContainer) GetHandler() func(context.Context, events.CloudWatchEvent) error {
+	topicARN := os.Getenv("SNS_TOPIC_ARN")
+	if topicARN != "" {
+		f.NotificationsEnabled = true
+		f.TopicARN = topicARN
+	}
 	return func(ctx context.Context, event events.CloudWatchEvent) error {
 		repos, err := f.ListNoncompliantECRRepositories(ctx)
 		if err != nil {
