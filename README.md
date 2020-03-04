@@ -50,6 +50,7 @@ To deploy this function from AWS GovCloud or regions in China, you must have an 
 
 ### Configuration
 1. Interval (required) - How often should the function run? Requires a valid Schedule Expression: https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html. Default is once a day (`rate(24 hours)`).
+2. SNSTopicARN (optional) - The ARN of the Simple Notification Service topic to send noncompliant finding messages to.
 
 ### Test that it works
 After your specified interval and interval unit (example: 5 minutes), a CloudWatch event will trigger the Lambda function and scan your account for repositories that do not have image tag immutability enabled. If any are found, image tag immutability will be enabled.
@@ -74,8 +75,7 @@ make destroy
 ```
 
 ## To Do
-1. SNS alerting when a non-compliant repository is found.
-2. Integrate AWS Config when support for ECR repositories arrives.
+1. Integrate AWS Config when support for ECR repositories arrives.
 
 ## License
 [MIT No Attribution (MIT-0)](https://spdx.org/licenses/MIT-0.html)

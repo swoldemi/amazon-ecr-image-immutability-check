@@ -17,8 +17,11 @@ Metadata:
 Parameters:
   Interval:
     Type: String
-    Description: How often should the function run? For examples, see https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html
+    Description: Required. How often should the function run? For examples, see https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html
     Default: rate(24 hours)
+  SNSTopicARN:
+    Type: String 
+    Description: Optional. The ARN of the Simple Notification Service topic to send noncompliant finding messages to.
 
 Resources:
   ECRImageImmutabilityCheckExecutionRole:
@@ -58,6 +61,9 @@ Resources:
       MemorySize: 128
       Role: !GetAtt ECRImageImmutabilityCheckExecutionRole.Arn
       Timeout: 15
+      Environment:
+        Variables:
+          SNS_TOPIC_ARN: !Ref SNSTopicARN
 
   ECRImageImmutabilityCheckFunctionEvent:
     Type: AWS::Events::Rule
