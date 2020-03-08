@@ -30,7 +30,7 @@ func (f *FunctionContainer) ListNoncompliantECRRepositories(ctx context.Context)
 	if err := f.ECR.DescribeRepositoriesPagesWithContext(ctx, input, pager); err != nil {
 		return nil, err
 	}
-	if f.NotificationsEnabled {
+	if f.NotificationsEnabled || (len(repositories) != 0) {
 		if err := f.PublishSNSMessage(ctx, repositories); err != nil {
 			return nil, err
 		}
