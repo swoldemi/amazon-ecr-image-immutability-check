@@ -8,11 +8,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// ListNoncompliantECRRepositories lists all of the repositories within the current account and region
+// ListIncompliantECRRepositories lists all of the repositories within the current account and region
 // and tracks repositories without image tag immutability enabled.
 // TODO: What's the timeout bound on the number of requests made? Example: function timeout is 15 seconds
 // but there is a limit of 10,000 repositories per region.
-func (f *FunctionContainer) ListNoncompliantECRRepositories(ctx context.Context) ([]*ecr.Repository, error) {
+func (f *FunctionContainer) ListIncompliantECRRepositories(ctx context.Context) ([]*ecr.Repository, error) {
 	var repositories []*ecr.Repository
 	input := &ecr.DescribeRepositoriesInput{}
 	if err := input.Validate(); err != nil {
@@ -38,7 +38,7 @@ func (f *FunctionContainer) ListNoncompliantECRRepositories(ctx context.Context)
 	return repositories, nil
 }
 
-// SetImageTagImmutability sets ImageTagImmutability on all noncompliant ECR repositories.
+// SetImageTagImmutability sets ImageTagImmutability on all incompliant ECR repositories.
 func (f *FunctionContainer) SetImageTagImmutability(ctx context.Context, repos []*ecr.Repository) error {
 	for _, r := range repos {
 		input := &ecr.PutImageTagMutabilityInput{

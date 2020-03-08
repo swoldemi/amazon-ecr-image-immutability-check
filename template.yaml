@@ -21,7 +21,7 @@ Parameters:
     Default: rate(24 hours)
   SNSTopicARN:
     Type: String 
-    Description: Optional. The ARN of the Simple Notification Service topic to send noncompliant finding messages to.
+    Description: Optional. The ARN of the Simple Notification Service topic to send incompliant finding messages to.
 
 Resources:
   ECRImageImmutabilityCheckExecutionRole:

@@ -49,14 +49,14 @@ func (f *FunctionContainer) GetHandler() func(context.Context, events.CloudWatch
 		f.TopicARN = topicARN
 	}
 	return func(ctx context.Context, event events.CloudWatchEvent) error {
-		repos, err := f.ListNoncompliantECRRepositories(ctx)
+		repos, err := f.ListIncompliantECRRepositories(ctx)
 		if err != nil {
 			return err
 		}
 		if len(repos) == 0 {
 			return nil
 		}
-		log.Infof("Found %d noncompliant ECR repositories\n", len(repos))
+		log.Infof("Found %d incompliant ECR repositories\n", len(repos))
 		if err := f.SetImageTagImmutability(ctx, repos); err != nil {
 			return err
 		}

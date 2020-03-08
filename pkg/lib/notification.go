@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	header = `The ecr-image-immutability-check Lambda function you deployed found some noncompliant ECR repositories:`
+	header = `The ecr-image-immutability-check Lambda function you deployed found some incompliant ECR repositories:`
 
 	footer = `
 These repositories have had Image Tag Immutability enabled and are now compliant until changed.
@@ -23,7 +23,7 @@ ECR Registry ID: %s
 )
 
 // ConstructMessage constructurs the message sent to the SNS topic using
-// the noncompliant repositories that were found.
+// the incompliant repositories that were found.
 func ConstructMessage(repos []*ecr.Repository) (string, error) {
 	message := new(strings.Builder)
 	if _, err := message.WriteString(header); err != nil {
@@ -39,7 +39,7 @@ func ConstructMessage(repos []*ecr.Repository) (string, error) {
 	return message.String(), nil
 }
 
-// PublishSNSMessage reports noncompliant repository findings to an SNS topic.
+// PublishSNSMessage reports incompliant repository findings to an SNS topic.
 func (f *FunctionContainer) PublishSNSMessage(ctx context.Context, repos []*ecr.Repository) error {
 	message, err := ConstructMessage(repos)
 	if err != nil {
