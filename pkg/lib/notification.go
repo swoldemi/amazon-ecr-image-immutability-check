@@ -13,9 +13,11 @@ import (
 )
 
 const (
-	header = `The ecr-image-immutability-check Lambda function you deployed found some noncompliant ECR repositories:"`
+	header = `The ecr-image-immutability-check Lambda function you deployed found some noncompliant ECR repositories:`
 
-	footer = `AWS Region: %s
+	footer = `
+These repositories have had Image Tag Immutability enabled and are now compliant until changed.
+AWS Region: %s
 ECR Registry ID: %s
 `
 )
@@ -28,12 +30,12 @@ func ConstructMessage(repos []*ecr.Repository) (string, error) {
 		return "", err
 	}
 	for i, r := range repos {
-		part := fmt.Sprintf("%d. Repository: %s", i+1, *r.RepositoryName)
+		part := fmt.Sprintf("\n%d. Repository: %s", i+1, *r.RepositoryName)
 		if _, err := message.WriteString(part); err != nil {
 			return "", err
 		}
 	}
-	message.WriteString(fmt.Sprint(footer, os.Getenv("AWS_REGION"), repos[0].RegistryId))
+	message.WriteString(fmt.Sprintf(footer, os.Getenv("AWS_REGION"), *repos[0].RegistryId))
 	return message.String(), nil
 }
 
