@@ -44,6 +44,7 @@ Resources:
               - Action:
                   - ecr:DescribeRepositories
                   - ecr:PutImageTagMutability
+                  - sns:Publish
                   - xray:PutTraceSegments
                 Effect: Allow
                 Resource: "*"

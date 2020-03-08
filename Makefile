@@ -3,6 +3,7 @@ all : tmpl check build sam-package sam-deploy sam-tail-logs
 
 S3_BUCKET ?= swoldemi-tmp
 DEFAULT_STACK_NAME ?= lambda-ecr-image-immutability-check
+DEFAULT_REGION ?= us-east-2
 
 GOBIN := $(GOPATH)/bin
 GOIMPORTS := $(GOBIN)/goimports
@@ -47,7 +48,9 @@ sam-package:
 .PHONY: sam-deploy
 sam-deploy:
 	sam deploy \
+	--region $(DEFAULT_REGION) \
 	--template-file ./packaged.yaml \
+	--parameter-overrides Interval="rate(1\ minute)" SNSTopicARN=arn:aws:sns:us-east-2:273450712882:codestar-notifications-distris \
 	--stack-name $(DEFAULT_STACK_NAME) \
 	--capabilities CAPABILITY_IAM
 	aws --region $(DEFAULT_REGION) cloudformation describe-stacks --stack-name $(DEFAULT_STACK_NAME) --query 'Stacks[0].Outputs'
