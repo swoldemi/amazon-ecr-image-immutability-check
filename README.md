@@ -10,7 +10,7 @@
 
 The problem: As of March 2020, [AWS Config](https://aws.amazon.com/config/) does not support any custom or native integrations with ECR: https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html
 
-The solution: Run a Serverless Application Repository app to automatically remediate and report on noncompliant ECR repositories for you!
+The solution: Run a Serverless Application Repository app to automatically remediate and report on incompliant ECR repositories for you!
 
 ## Usage
 Prerequisites:
@@ -50,16 +50,32 @@ To deploy this function from AWS GovCloud or regions in China, you must have an 
 
 ### Configuration
 1. Interval (required) - How often should the function run? Requires a valid Schedule Expression: https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html. Default is once a day (`rate(24 hours)`).
-2. SNSTopicARN (optional) - The ARN of the Simple Notification Service topic to send noncompliant finding messages to.
+2. SNSTopicARN (optional) - The ARN of the Simple Notification Service topic to send incompliant finding messages to.
+
+If you would like to retrive notifications of repositories that have image-immutability disabled create and subscribe to an SNS topic then pass the ARN of the topic in the SNSTopicARN parameter.
+
+Example message contents (Email subscription):
+```
+The ecr-image-immutability-check Lambda function you deployed found some incompliant ECR repositories:
+1. Repository: product-a/service-one
+2. Repository: product-a/service-two
+3. Repository: custom-internal-nginx
+These repositories have had Image Tag Immutability enabled and are now compliant until changed.
+AWS Region: us-east-2
+ECR Registry ID: 123456789012
+
+--
+If you wish to stop receiving notifications from this topic, please click or visit the link below to unsubscribe:
+https://sns.us-east-2.amazonaws.com/unsubscribe.html?SubscriptionArn=arn:aws:sns:us-east-2:123456789012:your-topic-name:random-topic-id&Endpoint=example@example.com
+
+Please do not reply directly to this email. If you have any questions or comments regarding this email, please contact us at https://aws.amazon.com/support
+```
 
 ### Test that it works
-After your specified interval and interval unit (example: 5 minutes), a CloudWatch event will trigger the Lambda function and scan your account for repositories that do not have image tag immutability enabled. If any are found, image tag immutability will be enabled.
+After your specified interval and interval unit (example: rate(5 minutes)), a CloudWatch event will trigger the Lambda function and scan your account for repositories that do not have image tag immutability enabled. If any are found, image tag immutability will be enabled.
 
 ## Contributing
 Have an idea for a feature to enhance this serverless application? Open an [issue](https://github.com/swoldemi/ecr-image-immutability-check/issues) or [pull request](https://github.com/swoldemi/ecr-image-immutability-check/pulls)!
-
-### Screenshots
-(TODO)
 
 ### Development
 This application has been developed, built, and testing against [Go 1.13, Go 1.14](https://golang.org/dl/), the latest version of the [Serverless Application Model CLI](https://github.com/awslabs/aws-sam-cli), and the latest version of the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html). A [Makefile](./Makefile) has been provided for convenience.
@@ -76,6 +92,9 @@ make destroy
 
 ## To Do
 1. Integrate AWS Config when support for ECR repositories arrives.
+
+## Note
+It is also possible to prevent account users from changing the tag immutability setting by not granting them the `ecr:PutImageTagMutability` action.
 
 ## License
 [MIT No Attribution (MIT-0)](https://spdx.org/licenses/MIT-0.html)
