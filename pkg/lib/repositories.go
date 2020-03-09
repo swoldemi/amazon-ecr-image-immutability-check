@@ -40,6 +40,10 @@ func (f *FunctionContainer) ListIncompliantECRRepositories(ctx context.Context) 
 
 // SetImageTagImmutability sets ImageTagImmutability on all incompliant ECR repositories.
 func (f *FunctionContainer) SetImageTagImmutability(ctx context.Context, repos []*ecr.Repository) error {
+	if !f.AutoRemediationEnabled {
+		log.Warn("Skipping PutImageTagMutability call: auto-remediation is disabled")
+		return nil
+	}
 	for _, r := range repos {
 		input := &ecr.PutImageTagMutabilityInput{
 			ImageTagMutability: aws.String(ecr.ImageTagMutabilityImmutable),

@@ -52,9 +52,10 @@ To deploy this function from AWS GovCloud or regions in China, you must have an 
 
 ### Configuration
 1. Interval (required) - How often should the function run? Requires a valid Schedule Expression: https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html. Default is once a day (`rate(24 hours)`).
-2. SNSTopicARN (optional) - The ARN of the Simple Notification Service topic to send incompliant finding messages to.
+2. SNSTopicARN (optional) - The ARN of the Simple Notification Service topic to send incompliant finding messages to. No default.
+3. AutoRemediate (optional) - Should this function automatically enable image tag immutability (ENABLED or DISABLED)? ENABLED by default.
 
-If you would like to retrive notifications of repositories that have image-immutability disabled create and subscribe to an SNS topic then pass the ARN of the topic in the SNSTopicARN parameter.
+If you would like to retrive notifications of repositories that have image immutability disabled create and subscribe to an SNS topic then pass the ARN of the topic in the SNSTopicARN parameter.
 
 Example message contents (Email subscription):
 ```
@@ -62,10 +63,10 @@ The amazon-ecr-image-immutability-check Lambda function you deployed found some 
 1. Repository: product-a/service-one
 2. Repository: product-a/service-two
 3. Repository: custom-internal-nginx
-These repositories have had Image Tag Immutability enabled and are now compliant until changed.
+If auto-remediation is enabled, then these repositories will have Image Tag Immutability enabled and are now compliant until changed.
 AWS Region: us-east-2
 ECR Registry ID: 123456789012
-
+Auto-Remediation: ENABLED
 --
 If you wish to stop receiving notifications from this topic, please click or visit the link below to unsubscribe:
 https://sns.us-east-2.amazonaws.com/unsubscribe.html?SubscriptionArn=arn:aws:sns:us-east-2:123456789012:your-topic-name:random-topic-id&Endpoint=example@example.com

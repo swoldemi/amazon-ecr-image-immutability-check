@@ -69,7 +69,9 @@ func TestHandler(t *testing.T) {
 	if err := os.Setenv("SNS_TOPIC_ARN", "sample-topic"); err != nil {
 		t.Fatalf("Error setting SNS_TOPIC_ARN: %v", err)
 	}
-
+	if err := os.Setenv("AUTO_REMEDIATE", "ENABLED"); err != nil {
+		t.Fatalf("Error setting AUTO_REMEDIATE: %v", err)
+	}
 	testRepos := []*ecr.Repository{
 		{RepositoryName: aws.String("test-repo-one"), ImageTagMutability: aws.String(ecr.ImageTagMutabilityMutable), RegistryId: aws.String("123456789012")},
 		{RepositoryName: aws.String("test-repo-two"), ImageTagMutability: aws.String(ecr.ImageTagMutabilityMutable), RegistryId: aws.String("123456789012")},
@@ -93,7 +95,7 @@ func TestHandler(t *testing.T) {
 			Return(&ecr.PutImageTagMutabilityOutput{}, nil)
 	}
 
-	message, err := lib.ConstructMessage(testRepos)
+	message, err := lib.ConstructMessage(testRepos, lib.Enabled)
 	if err != nil {
 		t.Fatalf("Error constructing SNS message: %v", err)
 	}

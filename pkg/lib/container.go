@@ -14,21 +14,33 @@ import (
 // Environment denotes different environments.
 type Environment string
 
+// AutoRemediationStatus the status of autoremediation.
+type AutoRemediationStatus string
+
 const (
 	// Production denotes a production environment.
 	Production Environment = "production"
 
 	// Development denotes a development environment.
 	Development Environment = "development"
+
+	// Enabled denoted that auto-remediation is enabled.
+	Enabled AutoRemediationStatus = "ENABLED"
+
+	// Disabled denoted that auto-remediation is disabled.
+	Disabled AutoRemediationStatus = "DISABLED"
+
 )
 
 // FunctionContainer contains the dependencies and business logic for the amazon-ecr-image-immutability-check Lambda function.
 type FunctionContainer struct {
-	Environment          Environment
-	ECR                  ecriface.ECRAPI
-	SNS                  snsiface.SNSAPI
-	TopicARN             string
-	NotificationsEnabled bool
+	Environment            Environment
+	ECR                    ecriface.ECRAPI
+	SNS                    snsiface.SNSAPI
+	TopicARN               string
+	NotificationsEnabled   bool
+	AutoRemediationStatus AutoRemediationStatus
+	AutoRemediationEnabled bool
 }
 
 // NewFunctionContainer creates a new FunctionContainer.
@@ -47,6 +59,13 @@ func (f *FunctionContainer) GetHandler() func(context.Context, events.CloudWatch
 	if topicARN != "" {
 		f.NotificationsEnabled = true
 		f.TopicARN = topicARN
+	}
+	if os.Getenv("AUTO_REMEDIATE") == "ENABLED" {
+		f.AutoRemediationEnabled = true
+		f.AutoRemediationStatus = Enabled
+	}
+	if !f.AutoRemediationEnabled {
+		f.AutoRemediationStatus = Disabled
 	}
 	return func(ctx context.Context, event events.CloudWatchEvent) error {
 		repos, err := f.ListIncompliantECRRepositories(ctx)

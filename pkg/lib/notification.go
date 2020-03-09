@@ -16,15 +16,16 @@ const (
 	header = `The amazon-ecr-image-immutability-check Lambda function you deployed found some incompliant ECR repositories:`
 
 	footer = `
-These repositories have had Image Tag Immutability enabled and are now compliant until changed.
+If auto-remediation is enabled, then these repositories will have Image Tag Immutability enabled and are now compliant until changed.
 AWS Region: %s
 ECR Registry ID: %s
+Auto-Remediation: %s
 `
 )
 
 // ConstructMessage constructurs the message sent to the SNS topic using
 // the incompliant repositories that were found.
-func ConstructMessage(repos []*ecr.Repository) (string, error) {
+func ConstructMessage(repos []*ecr.Repository, rs AutoRemediationStatus) (string, error) {
 	message := new(strings.Builder)
 	if _, err := message.WriteString(header); err != nil {
 		return "", err
@@ -35,13 +36,13 @@ func ConstructMessage(repos []*ecr.Repository) (string, error) {
 			return "", err
 		}
 	}
-	message.WriteString(fmt.Sprintf(footer, os.Getenv("AWS_REGION"), *repos[0].RegistryId))
+	message.WriteString(fmt.Sprintf(footer, os.Getenv("AWS_REGION"), *repos[0].RegistryId, rs))
 	return message.String(), nil
 }
 
 // PublishSNSMessage reports incompliant repository findings to an SNS topic.
 func (f *FunctionContainer) PublishSNSMessage(ctx context.Context, repos []*ecr.Repository) error {
-	message, err := ConstructMessage(repos)
+	message, err := ConstructMessage(repos, f.AutoRemediationStatus)
 	if err != nil {
 		return err
 	}
