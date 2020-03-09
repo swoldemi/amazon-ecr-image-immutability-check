@@ -3,16 +3,16 @@ Transform: AWS::Serverless-2016-10-31
 
 Metadata:
   AWS::ServerlessRepo::Application:
-    Name: ecr-image-immutability-check
+    Name: amazon-ecr-image-immutability-check
     Description: Enforce image tag immutability on all Elastic Container Registry repositories within your AWS account
     Author: Simon Woldemichael
     SpdxLicenseId: MIT-0
     LicenseUrl: LICENSE
     ReadmeUrl: README.md
     Labels: ["ecr", "tag", "immutability", "auto-remediation"]
-    HomePageUrl: https://github.com/swoldemi/ecr-image-immutability-check
+    HomePageUrl: https://github.com/swoldemi/amazon-ecr-image-immutability-check
     SemanticVersion: 1.0.0
-    SourceCodeUrl: https://github.com/swoldemi/ecr-image-immutability-check
+    SourceCodeUrl: https://github.com/swoldemi/amazon-ecr-image-immutability-check
 
 Parameters:
   Interval:
@@ -53,9 +53,9 @@ Resources:
 
   ECRImageImmutabilityCheckFunction:
     Type: AWS::Serverless::Function
-    Description: Lambda handler for ecr-image-immutability-check
+    Description: Lambda handler for amazon-ecr-image-immutability-check
     Properties:
-      FunctionName: ecr-image-immutability-check
+      FunctionName: amazon-ecr-image-immutability-check
       Handler: main
       Runtime: go1.x
       Tracing: Active
@@ -69,7 +69,7 @@ Resources:
   ECRImageImmutabilityCheckFunctionEvent:
     Type: AWS::Events::Rule
     Properties:
-      Description: CloudWatch scheduled event to invoke the ecr-image-immutability-check Lambda function
+      Description: CloudWatch scheduled event to invoke the amazon-ecr-image-immutability-check Lambda function
       ScheduleExpression: !Ref Interval
       State: ENABLED
       Targets:
@@ -86,5 +86,5 @@ Resources:
 
 Outputs:
   LambdaFunctionArn:
-    Description: ecr-image-immutability-check Lambda Function ARN
+    Description: amazon-ecr-image-immutability-check Lambda Function ARN
     Value: !GetAtt ECRImageImmutabilityCheckFunction.Arn

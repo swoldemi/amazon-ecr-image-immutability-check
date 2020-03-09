@@ -1,4 +1,4 @@
-// Package lib contains library units for the ecr-image-immutability-check Lambda function.
+// Package lib contains library units for the amazon-ecr-image-immutability-check Lambda function.
 package lib
 
 import (
@@ -22,7 +22,7 @@ const (
 	Development Environment = "development"
 )
 
-// FunctionContainer contains the dependencies and business logic for the ecr-image-immutability-check Lambda function.
+// FunctionContainer contains the dependencies and business logic for the amazon-ecr-image-immutability-check Lambda function.
 type FunctionContainer struct {
 	Environment          Environment
 	ECR                  ecriface.ECRAPI
@@ -41,7 +41,7 @@ func NewFunctionContainer(ecrSvc ecriface.ECRAPI, snsSvc snsiface.SNSAPI, env En
 	}
 }
 
-// GetHandler returns the function handler for ecr-image-immutability-check.
+// GetHandler returns the function handler for amazon-ecr-image-immutability-check.
 func (f *FunctionContainer) GetHandler() func(context.Context, events.CloudWatchEvent) error {
 	topicARN := os.Getenv("SNS_TOPIC_ARN")
 	if topicARN != "" {

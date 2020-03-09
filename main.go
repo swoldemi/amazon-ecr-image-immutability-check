@@ -8,7 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/sns"
 	"github.com/aws/aws-xray-sdk-go/xray"
 	log "github.com/sirupsen/logrus"
-	"github.com/swoldemi/ecr-image-immutability-check/pkg/lib"
+	"github.com/swoldemi/amazon-ecr-image-immutability-check/pkg/lib"
 )
 
 func main() {

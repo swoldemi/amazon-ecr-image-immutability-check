@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	header = `The ecr-image-immutability-check Lambda function you deployed found some incompliant ECR repositories:`
+	header = `The amazon-ecr-image-immutability-check Lambda function you deployed found some incompliant ECR repositories:`
 
 	footer = `
 These repositories have had Image Tag Immutability enabled and are now compliant until changed.

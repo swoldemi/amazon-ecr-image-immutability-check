@@ -16,7 +16,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/sns/snsiface"
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/mock"
-	"github.com/swoldemi/ecr-image-immutability-check/pkg/lib"
+	"github.com/swoldemi/amazon-ecr-image-immutability-check/pkg/lib"
 )
 
 type mockECRClient struct {

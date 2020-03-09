@@ -3,7 +3,7 @@ env:
   variables:
     GOPATH: /go
     GOBIN: /go/bin
-    ROOTPATH: /go/src/github.com/swoldemi/ecr-image-immutability-check
+    ROOTPATH: /go/src/github.com/swoldemi/amazon-ecr-image-immutability-check
 
 phases:
   install:

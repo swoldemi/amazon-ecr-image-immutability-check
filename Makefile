@@ -2,7 +2,7 @@ all : tmpl check build sam-package sam-deploy sam-tail-logs
 .PHONY: all
 
 S3_BUCKET ?= swoldemi-tmp
-DEFAULT_STACK_NAME ?= lambda-ecr-image-immutability-check
+DEFAULT_STACK_NAME ?= lambda-amazon-ecr-image-immutability-check
 DEFAULT_REGION ?= us-east-2
 
 GOBIN := $(GOPATH)/bin
@@ -65,7 +65,7 @@ stack-describe:
 
 .PHONY: sam-tail-logs
 sam-tail-logs:
-	sam logs --name ecr-image-immutability-check --tail
+	sam logs --name amazon-ecr-image-immutability-check --tail
 
 .PHONY: destroy
 destroy: clean
@@ -86,5 +86,5 @@ sar-public:
 	# Use this to make your SAR application public to all AWS accounts
 	aws serverlessrepo put-application-policy \
 		--region us-east-1 \
-		--application-id arn:aws:serverlessrepo:us-east-1:273450712882:applications/ecr-image-immutability-check \
+		--application-id arn:aws:serverlessrepo:us-east-1:273450712882:applications/amazon-ecr-image-immutability-check \
 		--statements Principals=*,Actions=Deploy
