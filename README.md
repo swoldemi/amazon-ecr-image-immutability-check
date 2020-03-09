@@ -12,7 +12,7 @@ The problem: As of March 2020, [AWS Config](https://aws.amazon.com/config/) does
 
 The solution: Run a Serverless Application Repository app to automatically remediate and report on incompliant ECR repositories for you!
 
-![architecture](https://raw.githubusercontent.com/swoldemi/ecr-immutability-check/master/screenshots/architecture.png)
+![architecture](https://raw.githubusercontent.com/swoldemi/ecr-image-immutability-check/master/screenshots/architecture.png)
 
 ## Usage
 Prerequisites:
