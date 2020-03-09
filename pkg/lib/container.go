@@ -29,18 +29,17 @@ const (
 
 	// Disabled denoted that auto-remediation is disabled.
 	Disabled AutoRemediationStatus = "DISABLED"
-
 )
 
 // FunctionContainer contains the dependencies and business logic for the amazon-ecr-image-immutability-check Lambda function.
 type FunctionContainer struct {
+	NotificationsEnabled   bool
+	AutoRemediationEnabled bool
 	Environment            Environment
 	ECR                    ecriface.ECRAPI
 	SNS                    snsiface.SNSAPI
 	TopicARN               string
-	NotificationsEnabled   bool
-	AutoRemediationStatus AutoRemediationStatus
-	AutoRemediationEnabled bool
+	AutoRemediationStatus  AutoRemediationStatus
 }
 
 // NewFunctionContainer creates a new FunctionContainer.
