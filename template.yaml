@@ -22,12 +22,16 @@ Parameters:
   SNSTopicARN:
     Type: String 
     Description: Optional. The ARN of the Simple Notification Service topic to send incompliant finding messages to.
+    Default: ""
   AutoRemediate:
     Type: String
     Description: "Optional. Should this function automatically enable image tag immutability (ENABLED or DISABLED)? Default: ENABLED"
     Default: ENABLED
     AllowedValues: ["ENABLED", "DISABLED"]
-  
+
+Conditions:
+  HasSNSTopicARN: !Not [!Equals [!Ref SNSTopicARN, ""]]
+
 Resources:
   ECRImageImmutabilityCheckExecutionRole:
     Type: AWS::IAM::Role
@@ -69,7 +73,7 @@ Resources:
       Timeout: 15
       Environment:
         Variables:
-          SNS_TOPIC_ARN: !Ref SNSTopicARN
+          SNS_TOPIC_ARN: !If [ HasSNSTopicARN, !Ref SNSTopicARN, !Ref "AWS::NoValue"]
           AUTO_REMEDIATE: !Ref AutoRemediate
 
   ECRImageImmutabilityCheckFunctionEvent:
