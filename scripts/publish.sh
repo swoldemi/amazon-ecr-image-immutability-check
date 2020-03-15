@@ -31,11 +31,12 @@ publish_all_regions()
         echo Deploying to region $REGION
         sam publish --region $REGION --template packaged.yaml
 	    sam package --template-file template.yaml --s3-bucket $BUCKET_PREFIX-$REGION --output-template-file packaged.yaml
-        aws serverlessrepo put-application-policy \
-		    --region $REGION \
-		    --application-id arn:aws:serverlessrepo:us-east-1:$ACCOUNT:applications/$APPLICATION \
-		    --statements Principals=*,Actions=Deploy
     done
+
+    aws serverlessrepo put-application-policy \
+        --region us-east-1 \
+        --application-id arn:aws:serverlessrepo:us-east-1:$ACCOUNT:applications/$APPLICATION \
+        --statements Principals=*,Actions=Deploy
 }
 
 echo "On branch `basename $CODEBUILD_WEBHOOK_HEAD_REF`"
