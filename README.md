@@ -25,7 +25,7 @@ It is recommended that you deploy this Lambda function directly from the AWS Ser
 - CloudFormation via the [AWS CLI](https://aws.amazon.com/cli/)
 - CloudFormation via the [CloudFormation management console](https://aws.amazon.com/cloudformation/)
 
-To deploy this function from AWS GovCloud or regions in China, you must have an account with access to these regions.
+This function has been made available in all 18 commercial AWS regions that support AWS SAR. It is also possible to deploy the Lambda function in the GovCloud and China regions, if you have access to those regions.
 
 |Region                                        |Click and Deploy                                                                                                                                 |
 |----------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -47,8 +47,6 @@ To deploy this function from AWS GovCloud or regions in China, you must have an 
 |**EU (Stockholm) (eu-north-1)**               |[![][sar-deploy]](https://deploy.serverlessrepo.app/eu-north-1/?app=arn:aws:serverlessrepo:us-east-1:273450712882:applications/amazon-ecr-image-immutability-check)    |
 |**Middle East (Bahrain) (me-south-1)**        |[![][sar-deploy]](https://deploy.serverlessrepo.app/me-south-1/?app=arn:aws:serverlessrepo:us-east-1:273450712882:applications/amazon-ecr-image-immutability-check)    |
 |**South America (Sao Paulo) (sa-east-1)**     |[![][sar-deploy]](https://deploy.serverlessrepo.app/sa-east-1/?app=arn:aws:serverlessrepo:us-east-1:273450712882:applications/amazon-ecr-image-immutability-check)     |
-|**AWS GovCloud (US-East) (us-gov-east-1)**    |[![][sar-deploy]](https://deploy.serverlessrepo.app/us-gov-east-1/?app=arn:aws:serverlessrepo:us-east-1:273450712882:applications/amazon-ecr-image-immutability-check) |
-|**AWS GovCloud (US-West) (us-gov-west-1)**    |[![][sar-deploy]](https://deploy.serverlessrepo.app/us-gov-west-1/?app=arn:aws:serverlessrepo:us-east-1:273450712882:applications/amazon-ecr-image-immutability-check) |
 
 ### Configuration
 1. Interval (required) - How often should the function run? Requires a valid Schedule Expression: https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html. Default is once a day (`rate(24 hours)`).
