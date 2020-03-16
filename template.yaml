@@ -11,7 +11,7 @@ Metadata:
     ReadmeUrl: README.md
     Labels: ["ecr", "tag", "immutability", "auto-remediation"]
     HomePageUrl: https://github.com/swoldemi/amazon-ecr-image-immutability-check
-    SemanticVersion: 1.0.0
+    SemanticVersion: 1.1.0
     SourceCodeUrl: https://github.com/swoldemi/amazon-ecr-image-immutability-check
 
 Parameters:
